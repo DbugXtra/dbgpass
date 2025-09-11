@@ -34,6 +34,25 @@ A modern, extensible C++ password generator library with CLI interface, built us
 
 ### Building the Project
 
+#### Option 1: Using Build Script (Recommended)
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd password-generator
+
+# Build with the provided script (includes tests)
+./scripts/build.sh --tests
+
+# Or for development with debug symbols
+./scripts/build.sh --debug --tests --verbose
+
+# Install dependencies automatically (Ubuntu/Debian)
+./scripts/build.sh --install-deps --tests
+```
+
+#### Option 2: Manual CMake Build
+
 ```bash
 # Clone the repository
 git clone <repository-url>
@@ -48,17 +67,61 @@ make -j$(nproc)
 ./run_tests.sh
 ```
 
+### Installation
+
+#### System-wide Installation
+
+```bash
+# Build and install system-wide (requires sudo)
+./scripts/install.sh --system
+
+# Now you can run from anywhere
+passgen --help
+```
+
+#### User Installation (Default)
+
+```bash
+# Install for current user only
+./scripts/install.sh --user
+
+# Or simply
+./scripts/install.sh
+
+# Adds to ~/.local/bin and updates PATH
+passgen --version
+```
+
+#### Uninstallation
+
+```bash
+# Remove installation
+./scripts/install.sh --uninstall
+```
+
 ### Basic Usage
+
+#### Running from Build Directory
 
 ```bash
 # Generate a single password
-./passgen
+./build/passgen
 
 # Show help
-./passgen --help
+./build/passgen --help
+```
+
+#### After Installation
+
+```bash
+# Generate a single password
+passgen
+
+# Show help
+passgen --help
 
 # Interactive mode
-./passgen
+passgen
 # Then use commands like:
 # - generate
 # - batch
@@ -89,6 +152,16 @@ auto passwords = generator.generateBatch(10);
 bool isValid = generator.validatePassword("mypassword123");
 auto errors = generator.getValidationErrors("weak");
 ```
+
+## Build Scripts
+
+The project includes professional build and installation scripts:
+
+- **`./scripts/build.sh`** - Comprehensive build script with dependency installation, testing, and coverage options
+- **`./scripts/install.sh`** - Installation script supporting system-wide and user installations with man pages and desktop entries  
+- **`./run_tests.sh`** - Dedicated testing script with filtering and reporting options
+
+All scripts include `--help` for detailed usage information.
 
 ## Architecture
 
@@ -162,10 +235,25 @@ for (const auto& pwd : passwords) {
 
 ## Testing
 
-The project includes comprehensive tests:
+The project includes comprehensive tests with multiple ways to run them:
+
+#### Using the Build Script with Tests
 
 ```bash
-# Run all tests
+# Build and run tests in one command
+./scripts/build.sh --tests
+
+# Debug build with tests and coverage
+./scripts/build.sh --debug --tests --coverage
+
+# Clean build with tests
+./scripts/build.sh --clean --tests --verbose
+```
+
+#### Using the Dedicated Test Script
+
+```bash
+# Run all tests (after building)
 ./run_tests.sh
 
 # Run specific test suites
@@ -176,6 +264,17 @@ The project includes comprehensive tests:
 
 # Verbose output
 ./run_tests.sh --verbose
+```
+
+#### Manual Testing
+
+```bash
+# From build directory
+cd build
+./tests/password_generator_tests
+
+# With GoogleTest options
+./tests/password_generator_tests --gtest_filter="*PasswordGenerator*"
 ```
 
 ### Test Coverage
