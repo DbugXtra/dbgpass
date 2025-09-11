@@ -1,3 +1,34 @@
+# Build directories
+build/
+Build/
+BUILD/
+cmake-build-*/
+out/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+!*.cmake.in
+
+# Ninja build files
+.ninja_deps
+.ninja_log
+build.ninja
+
+# Generated executables and libraries
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+passgen
+password_generator_tests
+
 # Prerequisites
 *.d
 
@@ -37,5 +68,229 @@
 *.out
 *.app
 
-# debug information files
+# Debug information files
 *.dwo
+*.dSYM/
+*.su
+*.idb
+*.elf
+*.ko
+
+# Coverage files
+*.gcda
+*.gcno
+*.gcov
+coverage.info
+coverage_filtered.info
+coverage_report/
+htmlcov/
+.coverage
+
+# Static analysis
+*.scan
+cppcheck-report.txt
+*.sarif
+
+# Sanitizer reports
+*.asan
+*.msan
+*.tsan
+*.ubsan
+
+# Valgrind reports
+valgrind-*.log
+*.memcheck
+
+# IDE files
+.vscode/
+.vs/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Visual Studio
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# CLion
+.idea/
+cmake-build-*/
+
+# Qt Creator
+CMakeLists.txt.user
+CMakeLists.txt.user.*
+
+# Eclipse CDT
+.cproject
+.project
+.settings/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*~
+.#*
+#*#
+*.pid
+*.seed
+*.pid.lock
+
+# Test results
+test-results.xml
+gtest-results.xml
+*.xml
+TEST-*.xml
+
+# Package files
+*.tar.gz
+*.tgz
+*.tar.bz2
+*.zip
+*.7z
+*.rar
+*.deb
+*.rpm
+*.dmg
+*.pkg
+
+# CPack generated files
+_CPack_Packages/
+
+# Documentation generation
+docs/html/
+docs/latex/
+doxygen_warnings.txt
+
+# Python virtual environments (if using Python tools)
+venv/
+env/
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Node.js (if using any Node tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# JetBrains IDEs
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Vim
+*.swp
+*.swo
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Tags
+TAGS
+tags
+.tags
+.tags1
+*.tags
+*.taghl
+
+# Backup files
+*.bak
+*.backup
+*.orig
+*.rej
+
+# Patch files
+*.patch
+*.diff
+
+# Profiling
+*.prof
+gmon.out
+perf.data*
+*.trace
+
+# Core dumps
+core
+core.*
+
+# Custom build scripts output
+install_manifest.txt
+uninstall_manifest.txt
+
+# Package manager files (if using Conan, vcpkg, etc)
+conandata.yml
+conanfile.txt
+conaninfo.txt
+conanbuildinfo.*
+vcpkg_installed/
+.vcpkg-root
+
+# Local configuration files
+local_config.h
+local_settings.json
+.env.local
+.env.*.local
+
+# Documentation builds
+docs/build/
+docs/_build/
+sphinx_build/
+
+# Benchmark results
+benchmark_results/
+*.benchmark
+
+# Clang tools
+.clangd/
+compile_commands.json
+.cache/
+
+# Static analysis tools
+*.scan/
+clang-analyzer/
+scan-build-*/
+
+# Fuzzing
+fuzz-*
+crash-*
+leak-*
+timeout-*
+
+# Custom ignore patterns (project-specific)
+passwords.txt
+test_passwords.txt
+wordlist.txt
