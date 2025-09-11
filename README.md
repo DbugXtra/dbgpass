@@ -36,7 +36,51 @@ A modern, extensible C++ password generator library with CLI interface, built us
 
 ### Building the Project
 
-#### Option 1: Using Build Script (Recommended)
+#### macOS (Apple Silicon & Intel)
+
+##### Prerequisites
+```bash
+# Install Xcode Command Line Tools
+xcode-select --install
+
+# Install Homebrew (if not already installed)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install dependencies (automatic via build script)
+./scripts/build.sh --install-deps --tests
+```
+
+##### One-Command Build (Recommended)
+```bash
+# Clone and build with dependencies
+git clone <repository-url>
+cd password-generator
+
+# Option 1: Use macOS-specific script (recommended for macOS)
+./scripts/build-macos.sh --install
+
+# Option 2: Use cross-platform script
+./scripts/build.sh --install-deps --tests
+
+# Option 3: If you already have CMake and Ninja/Make
+./scripts/build.sh --tests
+```
+
+##### Manual Dependency Installation
+```bash
+# If you prefer to install dependencies manually
+brew install cmake ninja
+
+# Optional: for code coverage
+brew install gcovr lcov
+
+# Then build
+./scripts/build.sh --tests
+```
+
+#### Linux (Ubuntu/Debian/Other)
+
+##### Option 1: Using Build Script (Recommended)
 
 ```bash
 # Clone the repository
@@ -53,7 +97,7 @@ cd password-generator
 ./scripts/build.sh --install-deps --tests
 ```
 
-#### Option 2: Manual CMake Build
+#### Cross-Platform Manual Build
 
 ```bash
 # Clone the repository
@@ -63,15 +107,43 @@ cd password-generator
 # Build with CMake
 mkdir build && cd build
 cmake ..
+
+# macOS: Use number of CPU cores
+make -j$(sysctl -n hw.ncpu)
+
+# Linux: Use number of CPU cores  
+make -j$(nproc)
+
+# Windows (MSYS2/MinGW): Use available cores
 make -j$(nproc)
 
 # Run tests
-./run_tests.sh
+cd .. && ./run_tests.sh
 ```
 
 ### Installation
 
-#### System-wide Installation
+#### macOS Installation
+
+```bash
+# Option 1: User installation (recommended)
+./scripts/install.sh --user
+# Installs to ~/.local/bin and updates ~/.bashrc or ~/.zshrc
+
+# Option 2: System-wide installation (requires admin password)
+./scripts/install.sh --system
+# Installs to /usr/local/bin (available to all users)
+
+# Option 3: One-command build and install
+./scripts/build.sh --install-deps --tests && ./scripts/install.sh --user
+
+# Verify installation
+passgen --help
+```
+
+#### Linux Installation
+
+##### System-wide Installation
 
 ```bash
 # Build and install system-wide (requires sudo)
@@ -81,7 +153,7 @@ make -j$(nproc)
 passgen --help
 ```
 
-#### User Installation (Default)
+##### User Installation (Default)
 
 ```bash
 # Install for current user only
@@ -94,10 +166,10 @@ passgen --help
 passgen --version
 ```
 
-#### Uninstallation
+#### Uninstallation (All Platforms)
 
 ```bash
-# Remove installation
+# Remove installation (works for both user and system installs)
 ./scripts/install.sh --uninstall
 ```
 
@@ -282,7 +354,8 @@ auto errors = generator.getValidationErrors("weak");
 
 The project includes professional build and installation scripts:
 
-- **`./scripts/build.sh`** - Comprehensive build script with dependency installation, testing, and coverage options
+- **`./scripts/build.sh`** - Cross-platform build script with dependency installation, testing, and coverage options
+- **`./scripts/build-macos.sh`** - macOS-optimized build script with Homebrew integration and Apple Silicon support
 - **`./scripts/install.sh`** - Installation script supporting system-wide and user installations with man pages and desktop entries  
 - **`./run_tests.sh`** - Dedicated testing script with filtering and reporting options
 
@@ -495,9 +568,34 @@ The library is designed for easy extension. See [Extending Guide](docs/extending
 
 ## Platform Support
 
-- Linux (primary)
-- macOS
-- Windows (via MSYS2/MinGW)
+- **Linux (primary)** - Full support with all features
+- **macOS (Apple Silicon & Intel)** - Full support with Homebrew integration
+- **Windows** - Via MSYS2/MinGW
+
+### macOS-Specific Features
+
+- **Homebrew Integration**: Automatic dependency installation via `brew`
+- **Clipboard Integration**: Direct password copying with `pbcopy`
+- **Shell Detection**: Automatically updates `.bashrc` or `.zshrc` during user installation
+- **Apple Silicon**: Native support for M1/M2/M3 processors
+- **Xcode Integration**: Uses Xcode Command Line Tools for compilation
+
+#### macOS Tips & Tricks
+
+```bash
+# Copy password directly to clipboard (no newline)
+passgen -g -q | tr -d '\n' | pbcopy
+
+# Generate password and use in Keychain Access
+passgen -g -l 20 --no-symbols
+
+# Quick password for scripts (quiet mode)
+NEW_PASS=$(passgen -g -q)
+echo "Generated: $NEW_PASS"
+
+# Integration with macOS notifications
+passgen -g && osascript -e 'display notification "New password generated" with title "Password Generator"'
+```
 
 ## Contributing
 
