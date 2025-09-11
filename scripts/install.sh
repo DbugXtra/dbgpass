@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ============================================================================
-# Secure Password Generator - Installation Script
+# dbgpass - Debug Industries Pass - Installation Script
 # ============================================================================
 
 set -e  # Exit on error
@@ -20,7 +20,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="build"
 PREFIX="/usr/local"
-BINARY_NAME="passgen"
+BINARY_NAME="dbgpass"
 SYSTEMWIDE=0
 USER_INSTALL=0
 UNINSTALL=0
@@ -85,7 +85,7 @@ show_usage() {
     cat << EOF
 Usage: $0 [OPTIONS]
 
-Installation script for Secure Password Generator
+Installation script for dbgpass - Debug Industries Pass
 
 OPTIONS:
     -h, --help          Show this help message
@@ -108,7 +108,7 @@ EOF
 
 # Function to create desktop entry (Linux)
 create_desktop_entry() {
-    local desktop_file="password-generator.desktop"
+    local desktop_file="dbgpass.desktop"
     local desktop_dir
     
     if [ $SYSTEMWIDE -eq 1 ]; then
@@ -122,8 +122,8 @@ create_desktop_entry() {
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Password Generator
-Comment=Secure Password Generator
+Name=dbgpass
+Comment=Debug Industries Pass – Secure passwords, terminal‑first.
 Exec=$1
 Icon=security-high
 Terminal=true
@@ -143,20 +143,20 @@ EOF
 # Function to install man page
 install_man_page() {
     local man_dir
-    local man_file="$PROJECT_ROOT/docs/passgen.1"
+    local man_file="$PROJECT_ROOT/docs/dbgpass.1"
     
     # Create basic man page if it doesn't exist
     if [ ! -f "$man_file" ]; then
         mkdir -p "$PROJECT_ROOT/docs"
         cat > "$man_file" << 'EOF'
-.TH PASSGEN 1 "2024" "1.0.0" "Password Generator Manual"
+.TH DBGPASS 1 "2024" "1.0.0" "dbgpass Manual"
 .SH NAME
-passgen \- secure password generator
+dbgpass \- Debug Industries Pass – Secure passwords, terminal‑first
 .SH SYNOPSIS
-.B passgen
+.B dbgpass
 [\fIOPTIONS\fR]
 .SH DESCRIPTION
-Secure Password Generator is a tool for creating strong, random passwords
+dbgpass is Debug Industries Pass – a terminal-first tool for creating strong, random passwords
 with various configuration options.
 .SH COMMANDS
 .TP
@@ -177,18 +177,18 @@ Exit the program
 .SH EXAMPLES
 .TP
 Generate a password:
-.B passgen
+.B dbgpass
 .br
 > generate
 .TP
 Generate 10 passwords:
-.B passgen
+.B dbgpass
 .br
 > batch
 .br
 > 10
 .SH AUTHOR
-Secure Password Generator Team
+Debug Industries
 .SH COPYRIGHT
 MIT License
 EOF
@@ -198,13 +198,13 @@ EOF
         man_dir="$PREFIX/share/man/man1"
         sudo mkdir -p "$man_dir"
         sudo cp "$man_file" "$man_dir/"
-        sudo gzip -f "$man_dir/passgen.1"
+        sudo gzip -f "$man_dir/dbgpass.1"
         sudo mandb 2>/dev/null || true
     else
         man_dir="$HOME/.local/share/man/man1"
         mkdir -p "$man_dir"
         cp "$man_file" "$man_dir/"
-        gzip -f "$man_dir/passgen.1"
+        gzip -f "$man_dir/dbgpass.1"
     fi
     
     print_color "$GREEN" "✓ Man page installed"
@@ -293,30 +293,30 @@ perform_install() {
 # Function to create uninstall script
 create_uninstall_script() {
     local install_dir="$1"
-    local uninstall_script="$install_dir/uninstall-passgen.sh"
+    local uninstall_script="$install_dir/uninstall-dbgpass.sh"
     
     if [ $SYSTEMWIDE -eq 1 ]; then
-        cat > "/tmp/uninstall-passgen.sh" << EOF
+        cat > "/tmp/uninstall-dbgpass.sh" << EOF
 #!/bin/bash
-echo "Uninstalling Password Generator..."
+echo "Uninstalling dbgpass..."
 sudo rm -f "$install_dir/$BINARY_NAME"
 sudo rm -rf "$PREFIX/include/password_generator"
 sudo rm -f "$PREFIX/lib/libpassword_generator_lib.a"
-sudo rm -f "/usr/share/applications/password-generator.desktop"
-sudo rm -f "$PREFIX/share/man/man1/passgen.1.gz"
-echo "✓ Password Generator uninstalled"
+sudo rm -f "/usr/share/applications/dbgpass.desktop"
+sudo rm -f "$PREFIX/share/man/man1/dbgpass.1.gz"
+echo "✓ dbgpass uninstalled"
 EOF
-        sudo mv "/tmp/uninstall-passgen.sh" "$uninstall_script"
+        sudo mv "/tmp/uninstall-dbgpass.sh" "$uninstall_script"
         sudo chmod 755 "$uninstall_script"
     else
         cat > "$uninstall_script" << EOF
 #!/bin/bash
-echo "Uninstalling Password Generator..."
+echo "Uninstalling dbgpass..."
 rm -f "$install_dir/$BINARY_NAME"
-rm -f "$HOME/.local/share/applications/password-generator.desktop"
-rm -f "$HOME/.local/share/man/man1/passgen.1.gz"
+rm -f "$HOME/.local/share/applications/dbgpass.desktop"
+rm -f "$HOME/.local/share/man/man1/dbgpass.1.gz"
 rm -f "$uninstall_script"
-echo "✓ Password Generator uninstalled"
+echo "✓ dbgpass uninstalled"
 echo "Note: PATH modifications in shell config files were not removed"
 EOF
         chmod 755 "$uninstall_script"
@@ -327,7 +327,7 @@ EOF
 
 # Function to perform uninstallation
 perform_uninstall() {
-    print_header "Uninstalling Password Generator"
+    print_header "Uninstalling dbgpass"
     
     local paths_to_remove=()
     
@@ -336,21 +336,21 @@ perform_uninstall() {
         paths_to_remove+=("$PREFIX/bin/$BINARY_NAME")
         paths_to_remove+=("$PREFIX/include/password_generator")
         paths_to_remove+=("$PREFIX/lib/libpassword_generator_lib.a")
-        paths_to_remove+=("/usr/share/applications/password-generator.desktop")
-        paths_to_remove+=("$PREFIX/share/man/man1/passgen.1.gz")
+        paths_to_remove+=("/usr/share/applications/dbgpass.desktop")
+        paths_to_remove+=("$PREFIX/share/man/man1/dbgpass.1.gz")
         SYSTEMWIDE=1
     fi
     
     # Check user installation
     if [ -f "$HOME/.local/bin/$BINARY_NAME" ]; then
         paths_to_remove+=("$HOME/.local/bin/$BINARY_NAME")
-        paths_to_remove+=("$HOME/.local/share/applications/password-generator.desktop")
-        paths_to_remove+=("$HOME/.local/share/man/man1/passgen.1.gz")
-        paths_to_remove+=("$HOME/.local/bin/uninstall-passgen.sh")
+        paths_to_remove+=("$HOME/.local/share/applications/dbgpass.desktop")
+        paths_to_remove+=("$HOME/.local/share/man/man1/dbgpass.1.gz")
+        paths_to_remove+=("$HOME/.local/bin/uninstall-dbgpass.sh")
     fi
     
     if [ ${#paths_to_remove[@]} -eq 0 ]; then
-        print_color "$YELLOW" "Password Generator is not installed"
+        print_color "$YELLOW" "dbgpass is not installed"
         exit 0
     fi
     
@@ -376,7 +376,7 @@ perform_uninstall() {
             fi
         done
         
-        print_color "$GREEN" "✓ Password Generator uninstalled successfully"
+        print_color "$GREEN" "✓ dbgpass uninstalled successfully"
     else
         print_color "$YELLOW" "Uninstallation cancelled"
     fi
@@ -419,7 +419,7 @@ done
 
 # Main installation process
 main() {
-    print_header "Secure Password Generator Installer"
+    print_header "dbgpass - Debug Industries Pass Installer"
     
     # Detect OS
     detect_os
@@ -458,7 +458,7 @@ main() {
     fi
     
     # Perform installation
-    print_header "Installing Password Generator"
+    print_header "Installing dbgpass"
     perform_install
     
     # Print summary

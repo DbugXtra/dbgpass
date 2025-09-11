@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ============================================================================
-# macOS-Specific Build Script for Secure Password Generator
+# macOS-Specific Build Script for dbgpass - Debug Industries Pass
 # ============================================================================
 
 set -e  # Exit on error
@@ -119,7 +119,7 @@ install_dependencies() {
 # Function to show usage
 show_usage() {
     cat << EOF
-🍎 macOS Build Script for Secure Password Generator
+🍎 macOS Build Script for dbgpass - Debug Industries Pass
 
 Usage: $0 [OPTIONS]
 
@@ -182,7 +182,7 @@ done
 
 # Main function
 main() {
-    print_header "macOS Build System for Secure Password Generator"
+    print_header "macOS Build System for dbgpass - Debug Industries Pass"
     
     # Change to project root
     cd "$PROJECT_ROOT"
@@ -210,7 +210,7 @@ main() {
     
     # Install if requested
     if [ $INSTALL_AFTER -eq 1 ]; then
-        print_header "Installing Password Generator"
+        print_header "Installing dbgpass"
         ./scripts/install.sh --user
     fi
     
@@ -221,15 +221,15 @@ main() {
         echo
         print_color "$CYAN" "📋 Clipboard Integration:"
         print_color "$WHITE" "  # Copy password to clipboard"
-        print_color "$WHITE" "  passgen -g -q | tr -d '\\n' | pbcopy"
+        print_color "$WHITE" "  dbgpass -g -q | tr -d '\\n' | pbcopy"
         echo
         print_color "$CYAN" "🔔 Notification Integration:"
         print_color "$WHITE" "  # Generate password with notification"
-        print_color "$WHITE" "  passgen -g && osascript -e 'display notification \"New password generated\" with title \"Password Generator\"'"
+        print_color "$WHITE" "  dbgpass -g && osascript -e 'display notification \"New password generated\" with title \"dbgpass\"'"
         echo
         print_color "$CYAN" "🔐 Keychain Integration:"
         print_color "$WHITE" "  # Generate safe password for keychain"
-        print_color "$WHITE" "  passgen -g -l 20 --no-symbols"
+        print_color "$WHITE" "  dbgpass -g -l 20 --no-symbols"
         echo
     fi
     
@@ -240,19 +240,19 @@ main() {
     print_color "$GREEN" "│  🍎 macOS Build Successful!        │"
     print_color "$GREEN" "├─────────────────────────────────────┤"
     print_color "$GREEN" "│ Architecture: $ARCH"
-    print_color "$GREEN" "│ Executable:   build/passgen         │"
+    print_color "$GREEN" "│ Executable:   build/dbgpass         │"
     
     if [ $INSTALL_AFTER -eq 1 ]; then
-        print_color "$GREEN" "│ Installed:    ~/.local/bin/passgen  │"
+        print_color "$GREEN" "│ Installed:    ~/.local/bin/dbgpass  │"
     fi
     
     print_color "$GREEN" "└─────────────────────────────────────┘"
     
     echo
     if [ $INSTALL_AFTER -eq 1 ]; then
-        print_color "$CYAN" "🚀 You can now run: passgen --help"
+        print_color "$CYAN" "🚀 You can now run: dbgpass --help"
     else
-        print_color "$CYAN" "🚀 To run: cd build && ./passgen"
+        print_color "$CYAN" "🚀 To run: cd build && ./dbgpass"
         print_color "$CYAN" "📦 To install: ./scripts/install.sh --user"
     fi
     echo

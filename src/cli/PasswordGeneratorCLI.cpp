@@ -209,7 +209,7 @@ public:
     }
     
     void showUsage(const std::string& programName) {
-        std::cout << "Secure Password Generator v1.0.0\n";
+        std::cout << "dbgpass v1.0.0 - Debug Industries Pass\n";
         std::cout << "Usage: " << programName << " [options]\n\n";
         std::cout << "Options:\n";
         std::cout << "  -h, --help              Show this help message\n";
@@ -260,7 +260,7 @@ public:
                 return 0;
             }
             else if (arg == "--version") {
-                std::cout << "Secure Password Generator v1.0.0\n";
+                std::cout << "dbgpass v1.0.0 - Debug Industries Pass\n";
                 return 0;
             }
             else if (arg == "-g" || arg == "--generate") {
@@ -444,7 +444,9 @@ int PasswordGeneratorCLI::processArgs(int argc, char* argv[]) {
 void PasswordGeneratorCLI::run() {
     if (!pImpl->quietMode) {
         std::cout << "╔══════════════════════════════════════╗\n";
-        std::cout << "║   Secure Password Generator v1.0.0   ║\n";
+        std::cout << "║      dbgpass v1.0.0                  ║\n";
+        std::cout << "║  Debug Industries Pass               ║\n";
+        std::cout << "║  Secure passwords, terminal‑first.   ║\n";
         std::cout << "╚══════════════════════════════════════╝\n";
         std::cout << "Type 'help' for available commands\n\n";
     }

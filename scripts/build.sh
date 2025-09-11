@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ============================================================================
-# Secure Password Generator - Build Script
+# dbgpass - Debug Industries Pass - Build Script
 # ============================================================================
 
 set -e  # Exit on error
@@ -90,7 +90,7 @@ show_usage() {
     cat << EOF
 Usage: $0 [OPTIONS]
 
-Build script for Secure Password Generator
+Build script for dbgpass - Debug Industries Pass
 
 OPTIONS:
     -h, --help          Show this help message
@@ -167,7 +167,7 @@ done
 
 # Main build process
 main() {
-    print_header "Secure Password Generator Build System"
+    print_header "dbgpass - Debug Industries Pass Build System"
     
     # Change to project root
     cd "$PROJECT_ROOT"
@@ -340,7 +340,7 @@ main() {
     print_color "$GREEN" "├─────────────────────────────────────┤"
     print_color "$GREEN" "│ Type:       $BUILD_TYPE"
     print_color "$GREEN" "│ Directory:  $PROJECT_ROOT/$BUILD_DIR"
-    print_color "$GREEN" "│ Executable: $BUILD_DIR/passgen"
+    print_color "$GREEN" "│ Executable: $BUILD_DIR/dbgpass"
     
     if [ $RUN_TESTS -eq 1 ]; then
         print_color "$GREEN" "│ Tests:      ✓ Passed"
@@ -354,7 +354,7 @@ main() {
     
     echo
     print_color "$CYAN" "To run the password generator:"
-    print_color "$WHITE" "  cd $BUILD_DIR && ./passgen"
+    print_color "$WHITE" "  cd $BUILD_DIR && ./dbgpass"
     echo
 }
 

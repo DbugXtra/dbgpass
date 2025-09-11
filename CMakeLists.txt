@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(SecurePasswordGenerator VERSION 1.0.0)
+project(dbgpass VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -32,8 +32,8 @@ file(GLOB_RECURSE LIB_SOURCES
 add_library(password_generator_lib STATIC ${LIB_SOURCES})
 
 # Create executable
-add_executable(passgen src/main.cpp)
-target_link_libraries(passgen password_generator_lib)
+add_executable(dbgpass src/main.cpp)
+target_link_libraries(dbgpass password_generator_lib)
 
 # Testing
 option(BUILD_TESTS "Build tests" ON)
@@ -43,7 +43,7 @@ if(BUILD_TESTS)
 endif()
 
 # Installation
-install(TARGETS passgen DESTINATION bin)
+install(TARGETS dbgpass DESTINATION bin)
 install(DIRECTORY include/ DESTINATION include/password_generator)
 install(TARGETS password_generator_lib DESTINATION lib)
 
