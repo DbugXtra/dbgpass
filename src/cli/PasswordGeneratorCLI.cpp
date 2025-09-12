@@ -108,12 +108,11 @@ public:
             generator.setConfig(config);
             auto passwords = generator.generateBatch(count);
             
-            std::cout << "\n┌─ Generated " << count << " Passwords ─────────┐\n";
+            std::cout << "\n┌─ Generated " << count << " Passwords ────────────\n";
             for (size_t i = 0; i < passwords.size(); ++i) {
                 std::cout << "│ " << std::setw(3) << std::right << (i + 1) << ". " 
-                          << std::setw(30) << std::left << passwords[i] << " │\n";
+                          << std::setw(30) << std::left << passwords[i] << "\n";
             }
-            std::cout << "└──────────────────────────────────────┘\n\n";
         } catch (const std::exception&) {
             std::cout << "Invalid number\n";
         }
@@ -387,12 +386,11 @@ public:
         else if (batchFlag) {
             auto passwords = generator.generateBatch(batchCount);
             if (!quietMode) {
-                std::cout << "\n┌─ Generated " << batchCount << " Passwords ─────────┐\n";
+                std::cout << "\n┌─ Generated " << batchCount << " Passwords ────────────\n";
                 for (size_t i = 0; i < passwords.size(); ++i) {
                     std::cout << "│ " << std::setw(3) << std::right << (i + 1) << ". " 
-                              << std::setw(30) << std::left << passwords[i] << " │\n";
+                              << std::setw(30) << std::left << passwords[i] << "\n";
                 }
-                std::cout << "└──────────────────────────────────────┘\n";
             } else {
                 for (const auto& password : passwords) {
                     std::cout << password << "\n";
