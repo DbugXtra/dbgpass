@@ -16,24 +16,9 @@ public:
     ~PasswordGeneratorCLI();
     
     /**
-     * @brief Run the interactive CLI
-     */
-    void run();
-    
-    /**
      * @brief Process command-line arguments for automated access
      */
     int processArgs(int argc, char* argv[]);
-    
-    /**
-     * @brief Process a single command
-     */
-    bool processCommand(const std::string& command);
-    
-    /**
-     * @brief Set quiet mode (no prompts)
-     */
-    void setQuietMode(bool quiet);
 
 private:
     class Impl;

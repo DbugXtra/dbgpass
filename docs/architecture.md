@@ -152,9 +152,9 @@ Validation components implement `IPasswordValidator`:
 ### CLI Layer (`cli/`)
 
 **PasswordGeneratorCLI**:
-- Interactive command-line interface
-- Colorful output with box drawing
-- Real-time configuration and generation
+- Command-line interface with argument processing
+- Formatted output with entropy calculations
+- Configuration display and validation
 
 ## Data Flow
 
