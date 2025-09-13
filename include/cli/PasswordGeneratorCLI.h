@@ -3,8 +3,6 @@
 
 #include <memory>
 #include <string>
-#include <functional>
-#include <map>
 
 namespace password_generator {
 namespace cli {
