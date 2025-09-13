@@ -370,9 +370,9 @@ Generate password following the pattern.
 - Other characters: Used literally
 
 **Examples:**
-- `"LLDDSS"` ’ `"ab12@#"`
-- `"ULL-DDD"` ’ `"Abc-123"`
-- `"pass-DDDD"` ’ `"pass-5678"`
+- `"LLDDSS"` ï¿½ `"ab12@#"`
+- `"ULL-DDD"` ï¿½ `"Abc-123"`
+- `"pass-DDDD"` ï¿½ `"pass-5678"`
 
 ## Validators
 
@@ -582,33 +582,26 @@ namespace password_generator::cli {
 #### Methods
 
 ```cpp
-void run();
+int processArgs(int argc, char* argv[]);
 ```
-Run the interactive CLI.
+Process command-line arguments for automated access. Returns exit code.
 
-```cpp
-bool processCommand(const std::string& command);
-```
-Process a single command.
+#### Command-Line Options
 
-```cpp
-void setQuietMode(bool quiet);
-```
-Enable/disable quiet mode (no prompts).
-
-#### Available Commands
-
-- `generate`: Generate a single password
-- `batch`: Generate multiple passwords
-- `config`: Show current configuration
-- `set length <n>`: Set password length
-- `toggle lowercase/uppercase/digits/symbols`: Toggle character types
-- `toggle pronounceable`: Toggle pronounceable mode
-- `set symbols <chars>`: Set custom symbols
-- `validate`: Validate a user password
-- `clear`: Clear screen
-- `help`: Show help
-- `exit/quit`: Exit program
+- `-h, --help`: Show help message
+- `--version`: Show version information
+- `-g, --generate`: Generate a single password
+- `-b, --batch <count>`: Generate multiple passwords
+- `-l, --length <n>`: Set password length (8-128)
+- `--no-lowercase`: Exclude lowercase characters
+- `--no-uppercase`: Exclude uppercase characters
+- `--no-digits`: Exclude digit characters
+- `--no-symbols`: Exclude symbol characters
+- `-s, --symbols <chars>`: Set custom symbol set
+- `-p, --pronounceable`: Generate pronounceable password
+- `-c, --config`: Show current configuration
+- `-v, --validate <pass>`: Validate a password
+- `-q, --quiet`: Suppress prompts and decorations
 
 ## Example Usage
 

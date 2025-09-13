@@ -8,18 +8,10 @@ int main(int argc, char* argv[]) {
         
         // Process command-line arguments
         int result = cli.processArgs(argc, argv);
-        if (result == -1) {
-            // No arguments provided, run interactive mode
-            cli.run();
-        } else {
-            // Arguments were processed, return the result
-            return result;
-        }
+        return result;
         
     } catch (const std::exception& e) {
         std::cerr << "Fatal error: " << e.what() << "\n";
         return 1;
     }
-    
-    return 0;
 }

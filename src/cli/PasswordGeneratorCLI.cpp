@@ -1,15 +1,10 @@
 #include "cli/PasswordGeneratorCLI.h"
-#include "cli/CommandInvoker.h"
-#include "cli/commands/CliCommands.h"
 #include "core/PasswordGenerator.h"
 #include "core/config/PasswordGeneratorConfig.h"
 #include <iostream>
-#include <sstream>
 #include <iomanip>
 #include <cmath>
-#include <cstring>
 #include <vector>
-#include <memory>
 
 namespace password_generator {
 namespace cli {
@@ -18,28 +13,7 @@ class PasswordGeneratorCLI::Impl {
 public:
     core::PasswordGenerator generator;
     core::config::PasswordGeneratorConfig config;
-    CommandInvoker invoker;
     bool quietMode = false;
-    
-    Impl() {
-        initializeCommands();
-    }
-    
-    void initializeCommands() {
-        invoker.registerCommand("help", std::make_shared<commands::HelpCommand>());
-        invoker.registerCommand("generate", std::make_shared<commands::GenerateCommand>(generator, config));
-        invoker.registerCommand("batch", std::make_shared<commands::BatchCommand>(generator, config));
-        invoker.registerCommand("config", std::make_shared<commands::ConfigCommand>(config));
-        invoker.registerCommand("set length", std::make_shared<commands::SetLengthCommand>(config));
-        invoker.registerCommand("toggle lowercase", std::make_shared<commands::ToggleLowercaseCommand>(config));
-        invoker.registerCommand("toggle uppercase", std::make_shared<commands::ToggleUppercaseCommand>(config));
-        invoker.registerCommand("toggle digits", std::make_shared<commands::ToggleDigitsCommand>(config));
-        invoker.registerCommand("toggle symbols", std::make_shared<commands::ToggleSymbolsCommand>(config));
-        invoker.registerCommand("toggle pronounceable", std::make_shared<commands::TogglePronounceableCommand>(config));
-        invoker.registerCommand("set symbols", std::make_shared<commands::SetSymbolsCommand>(config));
-        invoker.registerCommand("validate", std::make_shared<commands::ValidateCommand>(generator, config));
-        invoker.registerCommand("clear", std::make_shared<commands::ClearCommand>());
-    }
     
     void showUsage(const std::string& programName) {
         std::cout << "dbgpass v1.0.0 - Debug Industries Pass\n";
@@ -60,12 +34,37 @@ public:
         std::cout << "  -v, --validate <pass>   Validate a password\n";
         std::cout << "  -q, --quiet             Suppress prompts and decorations\n\n";
         std::cout << "Examples:\n";
-        std::cout << "  " << programName << "                    # Interactive mode\n";
         std::cout << "  " << programName << " -g                 # Generate one password\n";
         std::cout << "  " << programName << " -g -l 20           # Generate 20-char password\n";
         std::cout << "  " << programName << " -b 5               # Generate 5 passwords\n";
         std::cout << "  " << programName << " -g --no-symbols    # No symbols\n";
         std::cout << "  " << programName << " -p -l 12           # Pronounceable 12-char password\n";
+    }
+    
+    void showConfig() {
+        if (!quietMode) {
+            std::cout << "\n┌─ Current Configuration ──────────────┐\n";
+            std::cout << "│ Length: " << std::setw(28) << std::left << config.length << " │\n";
+            std::cout << "│ Lowercase: " << std::setw(25) << std::left << (config.includeLowercase ? "enabled" : "disabled") << " │\n";
+            std::cout << "│ Uppercase: " << std::setw(25) << std::left << (config.includeUppercase ? "enabled" : "disabled") << " │\n";
+            std::cout << "│ Digits: " << std::setw(28) << std::left << (config.includeDigits ? "enabled" : "disabled") << " │\n";
+            std::cout << "│ Symbols: " << std::setw(27) << std::left << (config.includeSymbols ? "enabled" : "disabled") << " │\n";
+            std::cout << "│ Pronounceable: " << std::setw(21) << std::left << (config.pronounceable ? "enabled" : "disabled") << " │\n";
+            if (config.includeSymbols) {
+                std::cout << "│ Custom symbols: " << std::setw(20) << std::left << config.customSymbols << " │\n";
+            }
+            std::cout << "└──────────────────────────────────────┘\n";
+        } else {
+            std::cout << "length=" << config.length << "\n";
+            std::cout << "lowercase=" << (config.includeLowercase ? "true" : "false") << "\n";
+            std::cout << "uppercase=" << (config.includeUppercase ? "true" : "false") << "\n";
+            std::cout << "digits=" << (config.includeDigits ? "true" : "false") << "\n";
+            std::cout << "symbols=" << (config.includeSymbols ? "true" : "false") << "\n";
+            std::cout << "pronounceable=" << (config.pronounceable ? "true" : "false") << "\n";
+            if (config.includeSymbols) {
+                std::cout << "custom_symbols=" << config.customSymbols << "\n";
+            }
+        }
     }
     
     int processArgs(int argc, char* argv[]) {
@@ -75,7 +74,8 @@ public:
         }
         
         if (args.empty()) {
-            return -1; // No args, run interactive mode
+            showUsage("dbgpass");
+            return 1; // No args provided, show usage
         }
         
         bool generateFlag = false;
@@ -193,7 +193,7 @@ public:
         generator.setConfig(config);
         
         if (configFlag) {
-            invoker.executeCommand("config");
+            showConfig();
         }
         else if (validateFlag) {
             auto errors = generator.getValidationErrors(validatePassword);
@@ -273,46 +273,6 @@ int PasswordGeneratorCLI::processArgs(int argc, char* argv[]) {
     return pImpl->processArgs(argc, argv);
 }
 
-void PasswordGeneratorCLI::run() {
-    if (!pImpl->quietMode) {
-        std::cout << "╔══════════════════════════════════════╗\n";
-        std::cout << "║      dbgpass v1.0.0                  ║\n";
-        std::cout << "║  Debug Industries Pass               ║\n";
-        std::cout << "║  Secure passwords, terminal‑first.   ║\n";
-        std::cout << "╚══════════════════════════════════════╝\n";
-        std::cout << "Type 'help' for available commands\n\n";
-    }
-    
-    std::string command;
-    while (true) {
-        if (!pImpl->quietMode) {
-            std::cout << "❯ ";
-        }
-        
-        std::getline(std::cin, command);
-        
-        if (command == "exit" || command == "quit") {
-            if (!pImpl->quietMode) {
-                std::cout << "Goodbye! Stay secure! 🔐\n";
-            }
-            break;
-        }
-        
-        if (!processCommand(command)) {
-            if (!command.empty() && !pImpl->quietMode) {
-                std::cout << "Unknown command. Type 'help' for available commands.\n";
-            }
-        }
-    }
-}
-
-bool PasswordGeneratorCLI::processCommand(const std::string& command) {
-    return pImpl->invoker.executeCommand(command);
-}
-
-void PasswordGeneratorCLI::setQuietMode(bool quiet) {
-    pImpl->quietMode = quiet;
-}
 
 } // namespace cli
 } // namespace password_generator

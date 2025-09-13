@@ -29,8 +29,7 @@ Designed for developers and security professionals who need reliable password ge
   - Thread-safe design
   
 - **User-Friendly CLI**
-  - Interactive mode with colorful output
-  - Command-line flags for automated access (NEW)
+  - Command-line flags for automated access
   - Batch password generation
   - Real-time entropy calculation
   - Password validation tools
@@ -182,23 +181,20 @@ dbgpass --version
 #### Running from Build Directory
 
 ```bash
-# Generate a single password (interactive mode)
-./build/dbgpass
-
-# Generate a single password (automated)
+# Generate a single password
 ./build/dbgpass -g
 
 # Show help
 ./build/dbgpass --help
+
+# Show version
+./build/dbgpass --version
 ```
 
 #### After Installation
 
 ```bash
-# Interactive mode (no arguments)
-dbgpass
-
-# Automated usage with flags
+# Generate passwords
 dbgpass -g                    # Generate one password
 dbgpass -g -l 20              # Generate 20-character password
 dbgpass -b 5                  # Generate 5 passwords
@@ -210,21 +206,6 @@ dbgpass -q -g                 # Generate quietly (for scripts)
 dbgpass --help
 dbgpass -c                    # Show current config
 dbgpass -v "mypassword123"    # Validate a password
-```
-
-#### Interactive Mode Commands
-
-When running without arguments, use these commands:
-- `generate` - Generate a single password
-- `batch` - Generate multiple passwords
-- `config` - Show current configuration
-- `set length` - Set password length
-- `toggle lowercase/uppercase/digits/symbols/pronounceable` - Toggle options
-- `set symbols` - Set custom symbol set
-- `validate` - Validate a password
-- `help` - Show available commands
-- `exit` or `quit` - Exit the program
-
 ## Command-Line Reference
 
 ### Available Flags
