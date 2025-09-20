@@ -2,6 +2,7 @@
 
 #include "cli/commands/Command.h"
 #include "cli/commands/CommandContext.h"
+#include "cli/commands/CommandBuilder.h"
 #include <memory>
 #include <vector>
 
