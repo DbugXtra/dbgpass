@@ -1,10 +1,7 @@
 #include "cli/commands/CommandFactory.h"
+#include "cli/commands/ActionCommands.h"
 #include "cli/commands/HelpCommand.h"
 #include "cli/commands/VersionCommand.h"
-#include "cli/commands/SetLengthCommand.h"
-#include "cli/commands/ConfigCommands.h"
-#include "cli/commands/SetSymbolsCommand.h"
-#include "cli/commands/ActionCommands.h"
 #include <iostream>
 #include <typeinfo>
 
@@ -47,50 +44,7 @@ std::vector<std::unique_ptr<Command>> CommandFactory::createCommands(CommandCont
 }
 
 std::unique_ptr<Command> CommandFactory::createCommand(const std::string& arg, CommandContext& context) {
-    if (arg == "-h" || arg == "--help") {
-        return std::make_unique<HelpCommand>();
-    }
-    else if (arg == "--version") {
-        return std::make_unique<VersionCommand>();
-    }
-    else if (arg == "-g" || arg == "--generate") {
-        return std::make_unique<GenerateCommand>();
-    }
-    else if (arg == "-b" || arg == "--batch") {
-        return BatchCommand::create(context);
-    }
-    else if (arg == "-l" || arg == "--length") {
-        return SetLengthCommand::create(context);
-    }
-    else if (arg == "--no-lowercase") {
-        return std::make_unique<NoLowercaseCommand>();
-    }
-    else if (arg == "--no-uppercase") {
-        return std::make_unique<NoUppercaseCommand>();
-    }
-    else if (arg == "--no-digits") {
-        return std::make_unique<NoDigitsCommand>();
-    }
-    else if (arg == "--no-symbols") {
-        return std::make_unique<NoSymbolsCommand>();
-    }
-    else if (arg == "-s" || arg == "--symbols") {
-        return SetSymbolsCommand::create(context);
-    }
-    else if (arg == "-p" || arg == "--pronounceable") {
-        return std::make_unique<PronounceableCommand>();
-    }
-    else if (arg == "-c" || arg == "--config") {
-        return std::make_unique<ConfigShowCommand>();
-    }
-    else if (arg == "-v" || arg == "--validate") {
-        return ValidateCommand::create(context);
-    }
-    else if (arg == "-q" || arg == "--quiet") {
-        return std::make_unique<QuietCommand>();
-    }
-
-    return nullptr; // Unknown argument
+    return CommandBuilder::getInstance().createCommand(arg, context);
 }
 
 std::unique_ptr<Command> CommandFactory::createDefaultAction(const std::vector<std::unique_ptr<Command>>& /* commands */) {
