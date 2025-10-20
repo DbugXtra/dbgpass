@@ -1,5 +1,8 @@
 # dbgpass
 
+If you enjoy this content, consider buying us a coffee to help keep us going!
+https://buy.stripe.com/5kQ4gAa0b4pP7YQaW35EY00
+
 **Debug Industries Password Generator – Secure passwords, terminal‑first.**
 
 A modern, extensible C++ dbgpass library with CLI interface, built using professional design patterns and security best practices.
