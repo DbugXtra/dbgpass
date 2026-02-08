@@ -137,7 +137,7 @@ jobs:
     - name: Increment build number
       id: increment_version
       run: |
-        CURRENT_VERSION=$(grep 'VERSION' CMakeLists.txt | head -1 | sed 's/.*VERSION \([0-9.]*\).*/\1/')
+        CURRENT_VERSION=$(grep 'project(dbgpass VERSION' CMakeLists.txt | sed 's/.*VERSION \([0-9.]*\).*/\1/')
         echo "Current version: $CURRENT_VERSION"
         
         # Check if version already has a build number (4 parts: X.Y.Z.BUILD)
@@ -172,7 +172,7 @@ jobs:
         current_version = """$CURRENT_VERSION"""
         new_version = """$NEW_VERSION"""
         
-        # Replace using regex - match the exact line
+        # Replace using regex - match the exact line with project(dbgpass
         pattern = rf'project\(dbgpass VERSION {re.escape(current_version)}\)'
         replacement = f'project(dbgpass VERSION {new_version})'
         
@@ -186,7 +186,7 @@ jobs:
         PYTHON_EOF
         
         # Verify the change was made
-        if grep -q "$NEW_VERSION" CMakeLists.txt; then
+        if grep -q "project(dbgpass VERSION $NEW_VERSION" CMakeLists.txt; then
           echo "✓ CMakeLists.txt updated successfully"
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -196,7 +196,8 @@ jobs:
           echo "✓ Version committed and pushed"
         else
           echo "Error: Failed to update CMakeLists.txt"
-          cat CMakeLists.txt | head -5
+          echo "Expected to find: project(dbgpass VERSION $NEW_VERSION"
+          grep 'project' CMakeLists.txt
           exit 1
         fi
         
