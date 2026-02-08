@@ -93,11 +93,15 @@ jobs:
     needs: [build, code-quality]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor != 'dependabot[bot]'
+    permissions:
+      contents: write
+      packages: write
     
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Extract version from CMakeLists.txt
       id: version
@@ -118,10 +122,10 @@ jobs:
     - name: Create Release Tag
       if: steps.check_tag.outputs.exists == 'false'
       run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git tag -a "v${{ steps.version.outputs.version }}" -m "Release v${{ steps.version.outputs.version }}"
-        git push origin "v${{ steps.version.outputs.version }}"
+        git push --tags origin
     
     - name: Generate Release Notes
       id: release_notes
