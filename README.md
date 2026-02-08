@@ -1,9 +1,17 @@
 # dbgpass
 
-[![Build and Test](https://github.com/nmauro/dbgpass/actions/workflows/ci.yml/badge.svg)](https://github.com/nmauro/dbgpass/actions/workflows/ci.yml)
-
-If you enjoy this content, consider buying us a coffee to help keep us going!
-https://buy.stripe.com/5kQ4gAa0b4pP7YQaW35EY00
+[![Build and Test](https://github.com/dbugxtra/dbgpass/actions/workflows/ci.yml/badge.svg)](https://github.com/dbugxtra/dbgpass/actions/workflows/ci.yml)
+<p align="left">
+  <a href="https://donate.stripe.com/5kQ4gAa0b4pP7YQaW35EY00">
+    <img src="./images/stripe-donate-qrcode.png" 
+         alt="Scan to buy us a coffee with Stripe" 
+         width="150" 
+         height="150" 
+         style="border: 2px solid #6772E5; border-radius: 5px;">
+  </a>
+  <br>
+  <medium>Click or Scan to Buy us a Coffee</medium>
+</p>
 
 **Debug Industries Password Generator – Secure passwords, terminal‑first.**
 
@@ -44,6 +52,27 @@ Designed for developers and security professionals who need reliable password ge
 
 ### Building the Project
 
+**Option 1: Download Pre-Built Binaries (Recommended)**
+
+Pre-built binaries for Linux and macOS are available on the [GitHub Releases](https://github.com/dbugxtra/dbgpass/releases) page:
+
+```bash
+# Download the latest release for your platform
+# macOS:
+wget https://github.com/dbugxtra/dbgpass/releases/download/v1.0.0/dbgpass-1.0.0-macos.tar.gz
+tar -xzf dbgpass-1.0.0-macos.tar.gz
+cd dbgpass-1.0.0-macos
+./dbgpass --version
+
+# Linux:
+wget https://github.com/dbugxtra/dbgpass/releases/download/v1.0.0/dbgpass-1.0.0-linux-x86_64.tar.gz
+tar -xzf dbgpass-1.0.0-linux-x86_64.tar.gz
+cd dbgpass-1.0.0-linux-x86_64
+./dbgpass --version
+```
+
+**Option 2: Build from Source**
+
 **All platforms support automated build and testing:**
 
 ```bash
@@ -60,7 +89,7 @@ cd dbgpass
 ./run_tests.sh
 ```
 
-**Every push and pull request automatically runs tests on Ubuntu and macOS** - check the [Build and Test workflow](https://github.com/nmauro/dbgpass/actions/workflows/ci.yml) for status.
+**Every push and pull request automatically runs tests on Ubuntu and macOS** - check the [Build and Test workflow](https://github.com/debugxtra/dbgpass/actions/workflows/ci.yml) for status. Releases are automatically created with pre-built binaries when changes are merged to main.
 
 #### macOS (Apple Silicon & Intel)
 
@@ -642,20 +671,29 @@ cd dbgpass
 
 Releases are automatically created when changes are merged to the `main` branch. The release process:
 
-1. **Automatic version extraction** - Reads version from `CMakeLists.txt`
-2. **Tag creation** - Creates a git tag (e.g., `v1.0.0`)
-3. **GitHub Release** - Automatically generates a release page with:
+1. **Build and Test** - Compiles on Ubuntu (Linux x86_64) and macOS (Apple Silicon & Intel)
+2. **Create Artifacts** - Builds optimized release binaries for each platform
+3. **Automatic version extraction** - Reads version from `CMakeLists.txt`
+4. **Tag creation** - Creates a git tag (e.g., `v1.0.0`)
+5. **GitHub Release** - Automatically generates a release page with:
    - Release notes
    - Version information
    - Platform support details
    - Installation instructions
+   - **Pre-built binaries** for download:
+     - `dbgpass-X.Y.Z-linux-x86_64.tar.gz` - Linux binary
+     - `dbgpass-X.Y.Z-macos.tar.gz` - macOS binary (universal for Apple Silicon & Intel)
 
 **To trigger a release:**
 1. Update the version in `CMakeLists.txt`
 2. Commit and push to main (or merge a PR)
-3. GitHub Actions automatically creates the tag and release
+3. GitHub Actions automatically:
+   - Builds binaries for both platforms
+   - Tests everything passes
+   - Creates git tag
+   - Publishes release with binaries attached
 
-View releases at: [GitHub Releases](https://github.com/nmauro/dbgpass/releases)
+**Download releases:** [GitHub Releases](https://github.com/dbugxtra/dbgpass/releases)
 
 ## License
 
