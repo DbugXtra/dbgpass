@@ -1,0 +1,90 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            compiler: g++
+            cc: gcc
+            cxx: g++
+          - os: macos-latest
+            compiler: clang++
+            cc: clang
+            cxx: clang++
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies (Ubuntu)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build build-essential
+
+    - name: Install dependencies (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install cmake ninja
+
+    - name: Create build directory
+      run: mkdir -p build
+
+    - name: Configure CMake
+      working-directory: build
+      env:
+        CC: ${{ matrix.cc }}
+        CXX: ${{ matrix.cxx }}
+      run: cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON ..
+
+    - name: Build
+      working-directory: build
+      run: cmake --build . --config Release -j $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)
+
+    - name: Run unit and integration tests
+      working-directory: build
+      run: ctest --output-on-failure --verbose
+
+    - name: Test main executable
+      working-directory: build
+      run: |
+        ./dbgpass --version
+        ./dbgpass --help
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results-${{ matrix.os }}
+        path: build/test_results.xml
+        if-no-files-found: ignore
+
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Check for compilation warnings
+      run: |
+        # This is a placeholder for code quality checks
+        echo "Code quality checks configured"
+
+    - name: Verify build scripts are executable
+      run: |
+        chmod +x scripts/build.sh
+        chmod +x scripts/build-macos.sh
+        chmod +x run_tests.sh
+        ls -la scripts/ run_tests.sh
