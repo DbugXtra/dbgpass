@@ -138,6 +138,7 @@ jobs:
       id: increment_version
       run: |
         CURRENT_VERSION=$(grep 'VERSION' CMakeLists.txt | head -1 | sed 's/.*VERSION \([0-9.]*\).*/\1/')
+        echo "Current version: $CURRENT_VERSION"
         
         # Check if version already has a build number (4 parts: X.Y.Z.BUILD)
         IFS='.' read -ra PARTS <<< "$CURRENT_VERSION"
@@ -157,24 +158,45 @@ jobs:
         fi
         
         NEW_VERSION="$MAJOR.$MINOR.$PATCH.$BUILD"
+        echo "New version: $NEW_VERSION"
         echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
         
-        # Escape dots for sed regex
-        ESCAPED_CURRENT=$(printf '%s\n' "$CURRENT_VERSION" | sed -e 's/[\/&]/\\&/g')
-        ESCAPED_NEW=$(printf '%s\n' "$NEW_VERSION" | sed -e 's/[\/&]/\\&/g')
+        # Use Python for more reliable file manipulation
+        python3 << 'PYTHON_EOF'
+        import re
         
-        # Update CMakeLists.txt using a different delimiter to avoid issues with dots
-        sed -i "s|project(dbgpass VERSION $ESCAPED_CURRENT)|project(dbgpass VERSION $ESCAPED_NEW)|" CMakeLists.txt
+        # Read the file
+        with open('CMakeLists.txt', 'r') as f:
+          content = f.read()
+        
+        current_version = """$CURRENT_VERSION"""
+        new_version = """$NEW_VERSION"""
+        
+        # Replace using regex - match the exact line
+        pattern = rf'project\(dbgpass VERSION {re.escape(current_version)}\)'
+        replacement = f'project(dbgpass VERSION {new_version})'
+        
+        new_content = re.sub(pattern, replacement, content)
+        
+        # Write back
+        with open('CMakeLists.txt', 'w') as f:
+          f.write(new_content)
+        
+        print(f"Updated version from {current_version} to {new_version}")
+        PYTHON_EOF
         
         # Verify the change was made
         if grep -q "$NEW_VERSION" CMakeLists.txt; then
+          echo "✓ CMakeLists.txt updated successfully"
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add CMakeLists.txt
           git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
           git push origin main
+          echo "✓ Version committed and pushed"
         else
           echo "Error: Failed to update CMakeLists.txt"
+          cat CMakeLists.txt | head -5
           exit 1
         fi
         
