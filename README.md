@@ -669,29 +669,51 @@ cd dbgpass
 
 ### Release Process
 
-Releases are automatically created when changes are merged to the `main` branch. The release process:
+Releases are automatically created when changes are merged to the `main` branch. The release process uses **automatic build number incrementing**:
+
+#### Versioning Scheme
+
+- **Format**: `X.Y.Z.BUILD` (Major.Minor.Patch.Build)
+- **Build number**: Automatically increments on every merge to main
+- **Manual control**: Update `X.Y.Z` in `CMakeLists.txt` when you want a new major/minor/patch version
+  
+**Examples:**
+- `1.0.0` → `1.0.0.1` → `1.0.0.2` (auto-incremented builds)
+- When you update CMakeLists.txt to `1.0.1`:
+  - `1.0.1` → `1.0.1.1` → `1.0.1.2` (new patch version, build counter resets)
+- When you update CMakeLists.txt to `1.1.0`:
+  - `1.1.0` → `1.1.0.1` → `1.1.0.2` (new minor version, build counter resets)
+
+#### Automatic Release Workflow
 
 1. **Build and Test** - Compiles on Ubuntu (Linux x86_64) and macOS (Apple Silicon & Intel)
 2. **Create Artifacts** - Builds optimized release binaries for each platform
-3. **Automatic version extraction** - Reads version from `CMakeLists.txt`
-4. **Tag creation** - Creates a git tag (e.g., `v1.0.0`)
-5. **GitHub Release** - Automatically generates a release page with:
+3. **Increment Build Number** - Automatically bumps the build counter in `CMakeLists.txt`
+4. **Commit Version** - Creates a commit with the updated version (tagged with `[skip ci]`)
+5. **Tag creation** - Creates a git tag with the new version
+6. **GitHub Release** - Automatically generates a release page with:
    - Release notes
    - Version information
    - Platform support details
    - Installation instructions
    - **Pre-built binaries** for download:
-     - `dbgpass-X.Y.Z-linux-x86_64.tar.gz` - Linux binary
-     - `dbgpass-X.Y.Z-macos.tar.gz` - macOS binary (universal for Apple Silicon & Intel)
+     - `dbgpass-X.Y.Z.BUILD-linux-x86_64.tar.gz` - Linux binary
+     - `dbgpass-X.Y.Z.BUILD-macos.tar.gz` - macOS binary (universal for Apple Silicon & Intel)
 
 **To trigger a release:**
-1. Update the version in `CMakeLists.txt`
+- Simply merge a PR to main or push a commit
+- GitHub Actions automatically:
+  - Increments the build number
+  - Builds binaries for both platforms
+  - Tests everything passes
+  - Updates CMakeLists.txt
+  - Creates git tag
+  - Publishes release with binaries attached
+
+**To bump major/minor/patch version:**
+1. Edit `CMakeLists.txt` and update VERSION (e.g., `1.0.0` → `1.1.0`)
 2. Commit and push to main (or merge a PR)
-3. GitHub Actions automatically:
-   - Builds binaries for both platforms
-   - Tests everything passes
-   - Creates git tag
-   - Publishes release with binaries attached
+3. GitHub Actions detects the manual version change and resets build counter to `.1`
 
 **Download releases:** [GitHub Releases](https://github.com/dbugxtra/dbgpass/releases)
 
