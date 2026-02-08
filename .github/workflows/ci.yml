@@ -42,6 +42,12 @@ jobs:
     - name: Create build directory
       run: mkdir -p build
 
+    - name: Extract version from CMakeLists.txt
+      id: version
+      run: |
+        VERSION=$(grep 'VERSION' CMakeLists.txt | head -1 | sed 's/.*VERSION \([0-9.]*\).*/\1/')
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+
     - name: Configure CMake
       working-directory: build
       env:
@@ -62,6 +68,24 @@ jobs:
       run: |
         ./dbgpass --version
         ./dbgpass --help
+
+    - name: Prepare binaries for release
+      working-directory: build
+      run: |
+        mkdir -p dbgpass-${{ matrix.os }}
+        cp dbgpass dbgpass-${{ matrix.os }}/
+        if [[ "${{ runner.os }}" == "Linux" ]]; then
+          tar -czf dbgpass-${{ steps.version.outputs.version }}-linux-x86_64.tar.gz dbgpass-${{ matrix.os }}/
+        else
+          tar -czf dbgpass-${{ steps.version.outputs.version }}-macos.tar.gz dbgpass-${{ matrix.os }}/
+        fi
+
+    - name: Upload binaries
+      uses: actions/upload-artifact@v4
+      with:
+        name: binaries-${{ matrix.os }}
+        path: build/*.tar.gz
+        if-no-files-found: ignore
 
     - name: Upload test results
       if: always()
@@ -160,14 +184,23 @@ jobs:
         cat release_notes.txt >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
     
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+    
     - name: Create GitHub Release
       if: steps.check_tag.outputs.exists == 'false'
-      uses: actions/create-release@v1
+      id: create_release
+      uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: v${{ steps.version.outputs.version }}
-        release_name: Release v${{ steps.version.outputs.version }}
-        body: ${{ steps.release_notes.outputs.notes }}
+        name: Release v${{ steps.version.outputs.version }}
+        body_path: release_notes.txt
         draft: false
         prerelease: false
+        files: |
+          artifacts/binaries-ubuntu-latest/*.tar.gz
+          artifacts/binaries-macos-latest/*.tar.gz
