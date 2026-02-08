@@ -6,7 +6,7 @@ This guide provides detailed instructions for building, testing, and installing 
 
 ### Required Tools
 
-- **C++17 Compiler**: GCC 7.0+, Clang 5.0+, or MSVC 2017+
+- **C++17 Compiler**: GCC 7.0+, Clang 5.0+
 - **CMake**: Version 3.10 or higher
 - **Git**: For cloning the repository
 
@@ -64,24 +64,6 @@ brew install cmake git
 brew install ninja clang-format llvm
 ```
 
-### Windows (MSYS2/MinGW)
-
-```bash
-# Install MSYS2 from https://www.msys2.org/
-
-# In MSYS2 shell:
-pacman -S mingw-w64-x86_64-gcc
-pacman -S mingw-w64-x86_64-cmake
-pacman -S mingw-w64-x86_64-ninja
-pacman -S git
-```
-
-### Windows (Visual Studio)
-
-- Install Visual Studio 2017 or later with C++ workload
-- Install CMake from https://cmake.org/download/
-- Install Git for Windows
-
 ## Building the Project
 
 ### Quick Build
@@ -105,15 +87,6 @@ cmake --build . --parallel  # Cross-platform
 mkdir build && cd build
 cmake -G Ninja ..
 ninja
-```
-
-### Visual Studio Build
-
-```cmd
-mkdir build
-cd build
-cmake -G "Visual Studio 16 2019" ..
-cmake --build . --config Release
 ```
 
 ## Build Configuration Options
@@ -340,12 +313,6 @@ Create `.vscode/tasks.json`:
 - CLion will automatically detect CMakeLists.txt
 - Configure build profiles in Settings → Build, Execution, Deployment → CMake
 
-#### Visual Studio
-
-- Use "Open Folder" to open project root
-- Visual Studio will detect CMakeLists.txt automatically
-- Configure build settings in CMakeSettings.json
-
 ### Code Formatting
 
 Setup `.clang-format`:
@@ -465,21 +432,6 @@ target_link_libraries(target_name stdc++fs)
 # Or use newer compiler
 ```
 
-#### Windows-Specific Issues
-
-```bash
-# Error: 'M_PI' was not declared
-# Solution: Define _USE_MATH_DEFINES
-
-# Add to CMakeLists.txt:
-if(WIN32)
-    add_definitions(-D_USE_MATH_DEFINES)
-endif()
-
-# Or use portable constants
-const double PI = 3.14159265358979323846;
-```
-
 ### Performance Issues
 
 #### Slow Debug Builds
@@ -503,7 +455,6 @@ make -j2  # Instead of -j$(nproc)
 # Monitor memory usage
 htop  # Linux
 Activity Monitor  # macOS
-Task Manager  # Windows
 ```
 
 ### Runtime Issues
@@ -565,11 +516,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
         compiler: [gcc, clang]
-        exclude:
-          - os: windows-latest
-            compiler: clang
 
     steps:
     - uses: actions/checkout@v2

@@ -169,9 +169,6 @@ make -j$(sysctl -n hw.ncpu)
 # Linux: Use number of CPU cores  
 make -j$(nproc)
 
-# Windows (MSYS2/MinGW): Use available cores
-make -j$(nproc)
-
 # Run tests
 cd .. && ./run_tests.sh
 ```
@@ -607,7 +604,6 @@ The library is designed for easy extension. See [Extending Guide](docs/extending
 
 - **Linux (primary)** - Full support with all features
 - **macOS (Apple Silicon & Intel)** - Full support with Homebrew integration
-- **Windows** - Via MSYS2/MinGW
 
 ### macOS-Specific Features
 
