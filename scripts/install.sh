@@ -69,9 +69,6 @@ detect_os() {
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         OS="macos"
         DISTRO="macos"
-    elif [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]]; then
-        OS="windows"
-        DISTRO="windows"
     else
         OS="unknown"
         DISTRO="unknown"
@@ -216,7 +213,7 @@ perform_install() {
     local binary_path="$PROJECT_ROOT/$BUILD_DIR/$BINARY_NAME"
     
     # Check if binary exists
-    if [ ! -f "$binary_path" ] && [ ! -f "${binary_path}.exe" ]; then
+    if [ ! -f "$binary_path" ]; then
         print_color "$RED" "Error: Binary not found at $binary_path"
         print_color "$YELLOW" "Please build the project first using ./scripts/build.sh"
         exit 1

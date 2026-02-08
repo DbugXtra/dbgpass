@@ -287,7 +287,7 @@ main() {
     if [ $RUN_TESTS -eq 1 ]; then
         print_header "Running Tests"
         
-        if [ -f "password_generator_tests" ] || [ -f "password_generator_tests.exe" ]; then
+        if [ -f "password_generator_tests" ]; then
             print_color "$YELLOW" "Executing test suite..."
             
             if [ $VERBOSE -eq 1 ]; then
