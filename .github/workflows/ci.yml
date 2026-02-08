@@ -162,19 +162,24 @@ jobs:
         echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
         
         # Use Python for more reliable file manipulation
-        python3 << 'PYTHON_EOF'
+        python3 << PYTHON_EOF
         import re
         
         # Read the file
         with open('CMakeLists.txt', 'r') as f:
           content = f.read()
         
-        current_version = """$CURRENT_VERSION"""
-        new_version = """$NEW_VERSION"""
+        current_version = "$CURRENT_VERSION"
+        new_version = "$NEW_VERSION"
+        
+        print(f"Python: current_version={current_version}, new_version={new_version}")
         
         # Replace using regex - match the exact line with project(dbgpass
         pattern = rf'project\(dbgpass VERSION {re.escape(current_version)}\)'
         replacement = f'project(dbgpass VERSION {new_version})'
+        
+        print(f"Pattern: {pattern}")
+        print(f"Replacement: {replacement}")
         
         new_content = re.sub(pattern, replacement, content)
         
