@@ -1,5 +1,7 @@
 # dbgpass
 
+[![Build and Test](https://github.com/nmauro/dbgpass/actions/workflows/ci.yml/badge.svg)](https://github.com/nmauro/dbgpass/actions/workflows/ci.yml)
+
 If you enjoy this content, consider buying us a coffee to help keep us going!
 https://buy.stripe.com/5kQ4gAa0b4pP7YQaW35EY00
 
@@ -41,6 +43,24 @@ Designed for developers and security professionals who need reliable password ge
 ## Quick Start
 
 ### Building the Project
+
+**All platforms support automated build and testing:**
+
+```bash
+git clone <repository-url>
+cd dbgpass
+
+# Quick build and test (macOS/Linux)
+./scripts/build.sh --tests
+
+# Or use macOS-specific script with Homebrew integration
+./scripts/build-macos.sh
+
+# Run tests independently
+./run_tests.sh
+```
+
+**Every push and pull request automatically runs tests on Ubuntu and macOS** - check the [Build and Test workflow](https://github.com/nmauro/dbgpass/actions/workflows/ci.yml) for status.
 
 #### macOS (Apple Silicon & Intel)
 
@@ -587,11 +607,55 @@ dbgpass -g && osascript -e 'display notification "New password generated" with t
 
 ## Contributing
 
+### Development Setup
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd dbgpass
+
+# Install dependencies and build with tests
+./scripts/build.sh --install-deps --tests
+
+# Or on macOS with Homebrew
+./scripts/build-macos.sh --install
+
+# Run all tests
+./run_tests.sh
+
+# For development, use debug build
+./scripts/build.sh --debug --tests --verbose
+```
+
+### Pull Request Requirements
+
 1. Fork the repository
 2. Create a feature branch
 3. Add tests for new functionality
 4. Ensure all tests pass: `./run_tests.sh`
-5. Submit a pull request
+5. Run the build script to verify: `./scripts/build.sh --tests`
+6. Submit a pull request (CI will run automatically)
+
+**Note:** All PRs automatically run tests on both Ubuntu and macOS. The build must pass before merging.
+
+### Release Process
+
+Releases are automatically created when changes are merged to the `main` branch. The release process:
+
+1. **Automatic version extraction** - Reads version from `CMakeLists.txt`
+2. **Tag creation** - Creates a git tag (e.g., `v1.0.0`)
+3. **GitHub Release** - Automatically generates a release page with:
+   - Release notes
+   - Version information
+   - Platform support details
+   - Installation instructions
+
+**To trigger a release:**
+1. Update the version in `CMakeLists.txt`
+2. Commit and push to main (or merge a PR)
+3. GitHub Actions automatically creates the tag and release
+
+View releases at: [GitHub Releases](https://github.com/nmauro/dbgpass/releases)
 
 ## License
 
