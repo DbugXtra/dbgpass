@@ -159,15 +159,24 @@ jobs:
         NEW_VERSION="$MAJOR.$MINOR.$PATCH.$BUILD"
         echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
         
-        # Update CMakeLists.txt
-        sed -i "s/project(dbgpass VERSION $CURRENT_VERSION)/project(dbgpass VERSION $NEW_VERSION)/" CMakeLists.txt
+        # Escape dots for sed regex
+        ESCAPED_CURRENT=$(printf '%s\n' "$CURRENT_VERSION" | sed -e 's/[\/&]/\\&/g')
+        ESCAPED_NEW=$(printf '%s\n' "$NEW_VERSION" | sed -e 's/[\/&]/\\&/g')
         
-        # Commit and push the version bump
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add CMakeLists.txt
-        git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
-        git push origin main
+        # Update CMakeLists.txt using a different delimiter to avoid issues with dots
+        sed -i "s|project(dbgpass VERSION $ESCAPED_CURRENT)|project(dbgpass VERSION $ESCAPED_NEW)|" CMakeLists.txt
+        
+        # Verify the change was made
+        if grep -q "$NEW_VERSION" CMakeLists.txt; then
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add CMakeLists.txt
+          git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
+          git push origin main
+        else
+          echo "Error: Failed to update CMakeLists.txt"
+          exit 1
+        fi
         
         echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
         echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
