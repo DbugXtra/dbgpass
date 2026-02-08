@@ -134,10 +134,48 @@ jobs:
         echo "version=$VERSION" >> $GITHUB_OUTPUT
         echo "tag=v$VERSION" >> $GITHUB_OUTPUT
     
+    - name: Increment build number
+      id: increment_version
+      run: |
+        CURRENT_VERSION=$(grep 'VERSION' CMakeLists.txt | head -1 | sed 's/.*VERSION \([0-9.]*\).*/\1/')
+        
+        # Check if version already has a build number (4 parts: X.Y.Z.BUILD)
+        IFS='.' read -ra PARTS <<< "$CURRENT_VERSION"
+        
+        if [ ${#PARTS[@]} -eq 4 ]; then
+          # Already has build number, increment it
+          MAJOR=${PARTS[0]}
+          MINOR=${PARTS[1]}
+          PATCH=${PARTS[2]}
+          BUILD=$((PARTS[3] + 1))
+        else
+          # No build number yet, start with .1
+          MAJOR=${PARTS[0]}
+          MINOR=${PARTS[1]}
+          PATCH=${PARTS[2]}
+          BUILD=1
+        fi
+        
+        NEW_VERSION="$MAJOR.$MINOR.$PATCH.$BUILD"
+        echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+        
+        # Update CMakeLists.txt
+        sed -i "s/project(dbgpass VERSION $CURRENT_VERSION)/project(dbgpass VERSION $NEW_VERSION)/" CMakeLists.txt
+        
+        # Commit and push the version bump
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add CMakeLists.txt
+        git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
+        git push origin main
+        
+        echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+        echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
+    
     - name: Check if tag already exists
       id: check_tag
       run: |
-        if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+        if git rev-parse "v${{ steps.increment_version.outputs.version }}" >/dev/null 2>&1; then
           echo "exists=true" >> $GITHUB_OUTPUT
         else
           echo "exists=false" >> $GITHUB_OUTPUT
@@ -148,14 +186,14 @@ jobs:
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git tag -a "v${{ steps.version.outputs.version }}" -m "Release v${{ steps.version.outputs.version }}"
+        git tag -a "v${{ steps.increment_version.outputs.version }}" -m "Release v${{ steps.increment_version.outputs.version }}"
         git push --tags origin
     
     - name: Generate Release Notes
       id: release_notes
       run: |
         cat > release_notes.txt << 'RELEASE_EOF'
-        ## dbgpass v${{ steps.version.outputs.version }}
+        ## dbgpass v${{ steps.increment_version.outputs.version }}
         
         ### What's New
         - Automated build and testing on Ubuntu and macOS
@@ -196,8 +234,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: v${{ steps.version.outputs.version }}
-        name: Release v${{ steps.version.outputs.version }}
+        tag_name: v${{ steps.increment_version.outputs.version }}
+        name: Release v${{ steps.increment_version.outputs.version }}
         body_path: release_notes.txt
         draft: false
         prerelease: false
