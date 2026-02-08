@@ -130,34 +130,35 @@ jobs:
     - name: Generate Release Notes
       id: release_notes
       run: |
-        {
-          echo 'notes<<EOF'
-          echo "## dbgpass v${{ steps.version.outputs.version }}"
-          echo ""
-          echo "### What's New"
-          echo "- Automated build and testing on Ubuntu and macOS"
-          echo "- Cross-platform compilation support"
-          echo "- Comprehensive test suite with GoogleTest"
-          echo ""
-          echo "### Platform Support"
-          echo "- ✅ Linux (Ubuntu/Debian)"
-          echo "- ✅ macOS (Apple Silicon & Intel)"
-          echo "- ✅ Windows (MSYS2/MinGW)"
-          echo ""
-          echo "### Installation"
-          echo "\`\`\`bash"
-          echo "./scripts/build.sh --tests"
-          echo "\`\`\`"
-          echo ""
-          echo "See [README](README.md) for detailed installation instructions."
-          echo ""
-          echo "### Testing"
-          echo "All tests pass on:"
-          echo "- Ubuntu (latest)"
-          echo "- macOS (latest, Apple Silicon native)"
-          echo ""
-          echo "EOF
-        } >> $GITHUB_OUTPUT
+        cat > release_notes.txt << 'RELEASE_EOF'
+        ## dbgpass v${{ steps.version.outputs.version }}
+        
+        ### What's New
+        - Automated build and testing on Ubuntu and macOS
+        - Cross-platform compilation support
+        - Comprehensive test suite with GoogleTest
+        
+        ### Platform Support
+        - ✅ Linux (Ubuntu/Debian)
+        - ✅ macOS (Apple Silicon & Intel)
+        - ✅ Windows (MSYS2/MinGW)
+        
+        ### Installation
+        ```bash
+        ./scripts/build.sh --tests
+        ```
+        
+        See [README](README.md) for detailed installation instructions.
+        
+        ### Testing
+        All tests pass on:
+        - Ubuntu (latest)
+        - macOS (latest, Apple Silicon native)
+        RELEASE_EOF
+        
+        echo "notes<<EOF" >> $GITHUB_OUTPUT
+        cat release_notes.txt >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
     
     - name: Create GitHub Release
       if: steps.check_tag.outputs.exists == 'false'
