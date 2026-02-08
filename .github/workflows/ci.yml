@@ -240,7 +240,6 @@ jobs:
         ### Platform Support
         - ✅ Linux (Ubuntu/Debian)
         - ✅ macOS (Apple Silicon & Intel)
-        - ✅ Windows (MSYS2/MinGW)
         
         ### Installation
         ```bash
