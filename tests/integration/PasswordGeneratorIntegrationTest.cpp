@@ -2,7 +2,11 @@
 #include "core/PasswordGenerator.h"
 #include "core/config/PasswordGeneratorConfig.h"
 #include "validators/EntropyValidator.h"
-#include "strategies/PatternPasswordStrategy.h"
+#include "strategies/StandardPasswordStrategy.h"
+#include "providers/LowercaseProvider.h"
+#include "providers/UppercaseProvider.h"
+#include "providers/DigitProvider.h"
+#include "providers/SymbolProvider.h"
 #include <thread>
 #include <set>
 #include <regex>
@@ -27,6 +31,14 @@ protected:
 
 TEST_F(PasswordGeneratorIntegrationTest, GeneratesValidPasswordsWithDefaultConfig) {
     PasswordGenerator generator(defaultConfig);
+    
+    // Set up strategy with character providers
+    auto strategy = std::make_unique<strategies::StandardPasswordStrategy>();
+    strategy->addCharacterSet(std::make_unique<providers::LowercaseProvider>());
+    strategy->addCharacterSet(std::make_unique<providers::UppercaseProvider>());
+    strategy->addCharacterSet(std::make_unique<providers::DigitProvider>());
+    strategy->addCharacterSet(std::make_unique<providers::SymbolProvider>());
+    generator.setStrategy(std::move(strategy));
     
     for (int i = 0; i < 100; ++i) {
         std::string password = generator.generate();

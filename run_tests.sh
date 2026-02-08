@@ -124,7 +124,8 @@ if [[ "$NO_BUILD" != true ]]; then
     
     # Build the project
     print_status "Compiling..."
-    if ! make -j$(nproc); then
+    JOBS=$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)
+    if ! cmake --build . -j $JOBS; then
         print_error "Build failed!"
         exit 1
     fi
@@ -182,7 +183,7 @@ if eval "$TEST_CMD"; then
     
     # Also test the main executable
     print_status "Testing main executable..."
-    MAIN_EXECUTABLE="$BUILD_DIR/passgen"
+    MAIN_EXECUTABLE="$BUILD_DIR/dbgpass"
     
     if [[ -f "$MAIN_EXECUTABLE" ]]; then
         print_status "Testing --version flag..."
