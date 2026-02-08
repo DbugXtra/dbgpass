@@ -638,6 +638,25 @@ cd dbgpass
 
 **Note:** All PRs automatically run tests on both Ubuntu and macOS. The build must pass before merging.
 
+### Release Process
+
+Releases are automatically created when changes are merged to the `main` branch. The release process:
+
+1. **Automatic version extraction** - Reads version from `CMakeLists.txt`
+2. **Tag creation** - Creates a git tag (e.g., `v1.0.0`)
+3. **GitHub Release** - Automatically generates a release page with:
+   - Release notes
+   - Version information
+   - Platform support details
+   - Installation instructions
+
+**To trigger a release:**
+1. Update the version in `CMakeLists.txt`
+2. Commit and push to main (or merge a PR)
+3. GitHub Actions automatically creates the tag and release
+
+View releases at: [GitHub Releases](https://github.com/nmauro/dbgpass/releases)
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
